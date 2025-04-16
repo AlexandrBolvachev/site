@@ -2,7 +2,7 @@
 
 import datetime
 import sqlalchemy
-from db_session import SqlAlchemyBase
+from .db_session import SqlAlchemyBase
 from sqlalchemy import orm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -20,6 +20,7 @@ class User(SqlAlchemyBase, UserMixin):
     status = sqlalchemy.Column(sqlalchemy.String, default='user')
 
     news = orm.relationship("News", back_populates='user')
+
 
     def __repr__(self):
         return f'{self.name} - {self.email} - {self.created_date}'

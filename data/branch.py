@@ -4,7 +4,7 @@ import datetime
 import sqlalchemy
 from sqlalchemy import orm
 
-from db_session import SqlAlchemyBase
+from .db_session import SqlAlchemyBase
 
 
 class Branch(SqlAlchemyBase):
@@ -21,5 +21,3 @@ class Branch(SqlAlchemyBase):
     razd_id = sqlalchemy.Column(sqlalchemy.Integer,
                                   sqlalchemy.ForeignKey("razdel.id"))
     status = sqlalchemy.Column(sqlalchemy.String, default='True')
-
-    user = orm.relationship('User')

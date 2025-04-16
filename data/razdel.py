@@ -4,7 +4,7 @@ import datetime
 import sqlalchemy
 from sqlalchemy import orm
 
-from db_session import SqlAlchemyBase
+from .db_session import SqlAlchemyBase
 
 
 class Razdel(SqlAlchemyBase):
@@ -17,4 +17,3 @@ class Razdel(SqlAlchemyBase):
                                      default=datetime.datetime.now)
     status = sqlalchemy.Column(sqlalchemy.String, default='True')
 
-    user = orm.relationship('User')
