@@ -3,6 +3,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from data import db_session
 from data.users import User
 from data.posts import News
+from data.razdel import Razdel
 from forms.user import RegisterForm
 from forms.login import LoginForm
 from forms.news import NewsForm
@@ -24,12 +25,14 @@ def main():
     @app.route("/")
     def index():
         db_sess = db_session.create_session()
-        if current_user.is_authenticated:
-            news = db_sess.query(News).filter(News.user == current_user)
-        else:
-            news = db_sess.query(News).filter(News.branch_id != True)
+        # if current_user.is_authenticated:
+        #     news = db_sess.query(News).filter(News.user == current_user, Razdel.status == True)
+        # else:
+        #     news = db_sess.query(News).filter(News.branch_id != True)
+        news = db_sess.query(News)
+        item = db_sess.query(Razdel)
 
-        return render_template("index.html", news=news)
+        return render_template("index.html", news=news, item=item)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():

@@ -2,11 +2,10 @@
 
 {% block content %}
 <h1>Разделы</h1>
-<a href="#" class="btn btn-secondary">Автомобили</a>
-<a href="#" class="btn btn-secondary">Животноводство</a>
-<a href="#" class="btn btn-secondary">Экономика</a>
-<a href="#" class="btn btn-secondary">Политика</a>
-{% for item in news%}
+{% for item in item %}
+<a href="/razdel/{{item.id}}" class="btn btn-secondary">{{item.name}}</a>
+{% endfor %}
+{% for item in news %}
 <div class="col-md6 border rounded">
     <h2>{{item.title}}</h2>
     <div>
