@@ -4,6 +4,7 @@ from data import db_session
 from data.users import User
 from data.posts import News
 from data.razdel import Razdel
+from data.branch import Branch
 from forms.user import RegisterForm
 from forms.login import LoginForm
 from forms.news import NewsForm
@@ -33,6 +34,13 @@ def main():
         item = db_sess.query(Razdel)
 
         return render_template("index.html", news=news, item=item)
+
+    @app.route('/razdel/<int:id>', methods=['GET', 'POST'])
+    def branch(id):
+        db_sess = db_session.create_session()
+        branch1 = db_sess.query(Branch).filter(Razdel.id == Branch.razd_id, Razdel.id == id)
+
+        return render_template("branch.html", branch=branch1, id=id)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -66,6 +74,9 @@ def main():
             db_sess.commit()
             return redirect('/')
         return render_template('news.html', title='Добавление новости', form=form)
+
+
+
 
     @app.route('/news/<int:id>', methods=['GET', 'POST'])
     @login_required
