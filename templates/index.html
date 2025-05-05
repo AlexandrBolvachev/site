@@ -3,6 +3,6 @@
 {% block content %}
 <h1>Разделы</h1>
 {% for item in item %}
-<a href="/razdel/{{item.id}}" class="btn btn-secondary">{{item.name}}</a>
+<p><a href="/razdel/{{item.id}}" class="btn btn-secondary">{{item.name}}</a></p>
 {% endfor %}
 {% endblock %}

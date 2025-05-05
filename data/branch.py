@@ -21,3 +21,5 @@ class Branch(SqlAlchemyBase):
     razd_id = sqlalchemy.Column(sqlalchemy.Integer,
                                   sqlalchemy.ForeignKey("razdel.id"))
     status = sqlalchemy.Column(sqlalchemy.String, default='True')
+
+    user = orm.relationship('User')

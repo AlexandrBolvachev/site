@@ -1,5 +1,9 @@
+from datetime import datetime
+
 from flask import Flask, render_template, request, redirect, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from jinja2.nodes import Break
+
 from data import db_session
 from data.users import User
 from data.posts import News
@@ -60,6 +64,12 @@ def main():
         logout_user()
         return redirect("/")
 
+    @app.route('/razdel/<int:r_id>/branch/<int:b_id>', methods=['GET', 'POST'])
+    def posts(r_id, b_id):
+        db_sess = db_session.create_session()
+        news = db_sess.query(News).filter(News.branch_id == b_id)
+        return render_template('posts.html', title='Обсуждения', news=news, b_id=b_id)
+
     @app.route('/news', methods=['GET', 'POST'])
     @login_required
     def add_news():
@@ -69,6 +79,10 @@ def main():
             news = News()
             news.title = form.title.data
             news.content = form.content.data
+            news.created_date = datetime.now()
+            news.user_id = current_user.id
+            news.branch_id = 0 #b_id
+
             current_user.news.append(news)
             db_sess.merge(current_user)
             db_sess.commit()

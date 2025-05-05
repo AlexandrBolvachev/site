@@ -3,7 +3,7 @@
 {% block content %}
 <h1>Ветки</h1>
 {% for item in branch %}
-<a href="/razdel/{{id}}/branch/{{item.id}}" class="btn btn-secondary">{{item.name}}</a>
+<p><a href="/razdel/{{id}}/branch/{{item.id}}" class="btn btn-secondary">{{item.name}}</a></p>
 {% endfor %}
 
 {% endblock %}

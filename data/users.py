@@ -20,6 +20,7 @@ class User(SqlAlchemyBase, UserMixin):
     status = sqlalchemy.Column(sqlalchemy.String, default='user')
 
     news = orm.relationship("News", back_populates='user')
+    branch = orm.relationship("Branch", back_populates='user')
 
 
     def __repr__(self):
