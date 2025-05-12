@@ -3,7 +3,7 @@
 {% block content %}
 <h1>Обсуждения</h1>
 {% if current_user.is_authenticated %}
-<p><a href="/news" class="btn btn-success">Добавить</a></p>
+<p><a href="/newsadd/{{b_id}}" class="btn btn-success">Добавить</a></p>
 {% else %}
 <p><a href="/register" class="btn btn-success">Добавить</a></p>
 {% endif %}

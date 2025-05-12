@@ -2,7 +2,6 @@ from datetime import datetime
 
 from flask import Flask, render_template, request, redirect, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from jinja2.nodes import Break
 
 from data import db_session
 from data.users import User
@@ -30,10 +29,6 @@ def main():
     @app.route("/")
     def index():
         db_sess = db_session.create_session()
-        # if current_user.is_authenticated:
-        #     news = db_sess.query(News).filter(News.user == current_user, Razdel.status == True)
-        # else:
-        #     news = db_sess.query(News).filter(News.branch_id != True)
         news = db_sess.query(News)
         item = db_sess.query(Razdel)
 
@@ -70,9 +65,9 @@ def main():
         news = db_sess.query(News).filter(News.branch_id == b_id)
         return render_template('posts.html', title='Обсуждения', news=news, b_id=b_id)
 
-    @app.route('/news', methods=['GET', 'POST'])
+    @app.route('/newsadd/<int:id>', methods=['GET', 'POST'])
     @login_required
-    def add_news():
+    def add_news(id):
         form = NewsForm()
         if form.validate_on_submit():
             db_sess = db_session.create_session()
@@ -81,15 +76,13 @@ def main():
             news.content = form.content.data
             news.created_date = datetime.now()
             news.user_id = current_user.id
-            news.branch_id = 0 #b_id
+            news.branch_id = id
 
             current_user.news.append(news)
             db_sess.merge(current_user)
             db_sess.commit()
             return redirect('/')
         return render_template('news.html', title='Добавление новости', form=form)
-
-
 
 
     @app.route('/news/<int:id>', methods=['GET', 'POST'])
