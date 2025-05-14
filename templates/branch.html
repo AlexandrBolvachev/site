@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Ветки</h1>
+<h1><a href="/">{{r_n.name}}</a></h1>
+{% if current_user.is_authenticated %}
+<p><a href="/add/{{r_id}}" class="btn btn-success">Добавить</a></p>
+{% else %}
+<p><a href="/register" class="btn btn-success">Добавить</a></p>
+{% endif %}
 {% for item in branch %}
-<p><a href="/razdel/{{id}}/branch/{{item.id}}" class="btn btn-secondary">{{item.name}}</a></p>
+<p><a href="/razdel/{{r_id}}/branch/{{item.id}}" class="btn btn-secondary">{{item.name}}</a></p>
 {% endfor %}
 
 {% endblock %}

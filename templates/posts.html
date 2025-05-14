@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Обсуждения</h1>
+<h1><a href="/">{{r_n.name}}</a> - <a href="/razdel/{{r_n.id}}">{{b_n.name}}</a></h1>
 {% if current_user.is_authenticated %}
-<p><a href="/newsadd/{{b_id}}" class="btn btn-success">Добавить</a></p>
+<p><a href="/newsadd/{{b_n.id}}" class="btn btn-success">Добавить</a></p>
 {% else %}
 <p><a href="/register" class="btn btn-success">Добавить</a></p>
 {% endif %}

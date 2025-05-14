@@ -21,5 +21,7 @@ class News(SqlAlchemyBase):
                                 sqlalchemy.ForeignKey("users.id"))
     branch_id = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("branch.id"))
+    razdel_id = sqlalchemy.Column(sqlalchemy.Integer,
+                                sqlalchemy.ForeignKey("razdel.id"))
 
     user = orm.relationship('User')

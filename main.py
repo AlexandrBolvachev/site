@@ -11,6 +11,7 @@ from data.branch import Branch
 from forms.user import RegisterForm
 from forms.login import LoginForm
 from forms.news import NewsForm
+from forms.add import AddForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -34,12 +35,47 @@ def main():
 
         return render_template("index.html", news=news, item=item)
 
+    @app.route('/add', methods=['GET', 'POST'])
+    @login_required
+    def add_r():
+        form = AddForm()
+        if form.validate_on_submit():
+            db_sess = db_session.create_session()
+            addr = Razdel()
+            addr.name = form.title.data
+            addr.created_date = datetime.now()
+            addr.user_id = current_user.id
+            addr.status = 'True'
+            db_sess.add(addr)
+            db_sess.commit()
+            return redirect('/')
+        return render_template('add.html', title='Добавление', form=form)
+
+    @app.route('/add/<int:r_id>', methods=['GET', 'POST'])
+    @login_required
+    def add_b(r_id):
+        form = AddForm()
+        if form.validate_on_submit():
+            db_sess = db_session.create_session()
+            addb = Branch()
+            addb.name = form.title.data
+            addb.created_date = datetime.now()
+            addb.user_id = current_user.id
+            addb.razdel_id = r_id
+            addb.status = 'True'
+            db_sess.add(addb)
+            db_sess.commit()
+            return redirect(f'/razdel/{r_id}')
+        return render_template('add.html', title='Добавление', form=form)
+
+
     @app.route('/razdel/<int:id>', methods=['GET', 'POST'])
     def branch(id):
         db_sess = db_session.create_session()
-        branch1 = db_sess.query(Branch).filter(Razdel.id == Branch.razd_id, Razdel.id == id)
+        branch = db_sess.query(Branch).filter(Razdel.id == Branch.razdel_id, Razdel.id == id)
+        razdel_name = db_sess.query(Razdel).filter(Razdel.id == id).first()
 
-        return render_template("branch.html", branch=branch1, id=id)
+        return render_template("branch.html", branch=branch, r_id=id, r_n=razdel_name)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -63,7 +99,9 @@ def main():
     def posts(r_id, b_id):
         db_sess = db_session.create_session()
         news = db_sess.query(News).filter(News.branch_id == b_id)
-        return render_template('posts.html', title='Обсуждения', news=news, b_id=b_id)
+        branch = db_sess.query(Branch).filter(Branch.id == b_id).first()
+        razdel_name = db_sess.query(Razdel).filter(Razdel.id == r_id).first()
+        return render_template('posts.html', news=news, r_n=razdel_name, b_n=branch)
 
     @app.route('/newsadd/<int:id>', methods=['GET', 'POST'])
     @login_required
@@ -71,17 +109,20 @@ def main():
         form = NewsForm()
         if form.validate_on_submit():
             db_sess = db_session.create_session()
+            b = db_sess.query(Branch).filter(Branch.id == id).first()
             news = News()
             news.title = form.title.data
             news.content = form.content.data
             news.created_date = datetime.now()
             news.user_id = current_user.id
             news.branch_id = id
+            news.razdel_id = b.razdel_id
 
             current_user.news.append(news)
             db_sess.merge(current_user)
             db_sess.commit()
-            return redirect('/')
+            branch = db_sess.query(Branch).filter(Branch.id == id).first()
+            return redirect(f'/razdel/{branch.razdel_id}/branch/{branch.id}')
         return render_template('news.html', title='Добавление новости', form=form)
 
 
@@ -104,7 +145,8 @@ def main():
                 news.title = form.title.data
                 news.content = form.content.data
                 db_sess.commit()
-                return redirect('/')
+                branch = db_sess.query(Branch).filter(Branch.id == id).first()
+                return redirect(f'/razdel/{branch.razdel_id}/branch/{branch.id}')
             else:
                 abort(404)
         return render_template('news.html', title='Редактирование новости', form=form)
@@ -113,13 +155,15 @@ def main():
     @login_required
     def delete_news(id):
         db_sess = db_session.create_session()
+
         news = db_sess.query(News).filter(News.id == id, News.user == current_user).first()
         if news:
             db_sess.delete(news)
             db_sess.commit()
         else:
             abort(404)
-        return redirect('/')
+        branch = db_sess.query(Branch).filter(Branch.id == id).first()
+        return redirect(f'/razdel/{branch.razdel_id}/branch/{branch.id}')
 
     @app.route('/register', methods=['GET', 'POST'])
     def reqister():
